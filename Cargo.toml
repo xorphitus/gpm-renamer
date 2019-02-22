@@ -5,3 +5,4 @@ authors = ["xorphitus <xorphitus@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+id3 = "0.3.0"
