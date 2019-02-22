@@ -1,5 +1,6 @@
 use id3::Tag;
 use regex::{Regex, NoExpand};
+use std::fs;
 use std::path::Path;
 
 fn main() {
@@ -18,6 +19,11 @@ fn main() {
     let track = format!("{:02}", tag.track().unwrap());
 
     let re = Regex::new(r".+ -").unwrap();
-    let newname = re.replace(file_name, NoExpand(&track));
-    println!("{}", newname);
+    let newname = re.replace(file_name, NoExpand(&track)).into_owned();
+
+    // FIXME: newname -> new file path
+    match fs::rename(file_path_str, newname) {
+        Ok(_) => {}
+        Err(e) => { eprintln!("{}", e); }
+    }
 }
