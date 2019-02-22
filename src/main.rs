@@ -1,4 +1,6 @@
-use id3::{Tag};
+
+use regex::{Regex, NoExpand};
+use id3::Tag;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -7,6 +9,11 @@ fn main() {
         return;
     }
     let filename = &args[1];
+
     let tag = Tag::read_from_path(filename).unwrap();
-    println!("{}", tag.track().unwrap());
+    let track = format!("{:02}", tag.track().unwrap());
+
+    let re = Regex::new(r".+ -").unwrap();
+    let newname = re.replace(filename, NoExpand(&track));
+    println!("{}", newname);
 }
