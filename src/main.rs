@@ -15,8 +15,15 @@ fn main() {
 
     let file_name = file_path.file_name().unwrap().to_str().unwrap();
 
-    let tag = Tag::read_from_path(file_path_str).unwrap();
-    let track = format!("{:02}", tag.track().unwrap());
+    let track = match Tag::read_from_path(file_path_str) {
+        Ok(tag) => tag.track().map(|tr| format!("{:02}", tr)),
+        Err(e) => panic!("failed to get mp3 tag: {}, {}", file_path_str, e),
+    };
+
+    let track = match track {
+        Some(t) => t,
+        None => panic!("failed to get track: {}", file_path_str),
+    };
 
     let re = Regex::new(r".+ -").unwrap();
     let new_name = re.replace(file_name, NoExpand(&track)).into_owned();
