@@ -19,10 +19,11 @@ fn main() {
     let track = format!("{:02}", tag.track().unwrap());
 
     let re = Regex::new(r".+ -").unwrap();
-    let newname = re.replace(file_name, NoExpand(&track)).into_owned();
+    let new_name = re.replace(file_name, NoExpand(&track)).into_owned();
+    let dir = file_path.parent().unwrap();
+    let new_path = dir.join(new_name);
 
-    // FIXME: newname -> new file path
-    match fs::rename(file_path_str, newname) {
+    match fs::rename(file_path_str, new_path) {
         Ok(_) => {}
         Err(e) => { eprintln!("{}", e); }
     }
