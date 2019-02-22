@@ -1,6 +1,6 @@
-
-use regex::{Regex, NoExpand};
 use id3::Tag;
+use regex::{Regex, NoExpand};
+use std::path::Path;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -8,12 +8,16 @@ fn main() {
         eprintln!("Usage: {} have to specify a mp3 file name", &args[0]);
         return;
     }
-    let filename = &args[1];
 
-    let tag = Tag::read_from_path(filename).unwrap();
+    let file_path_str = &args[1];
+    let file_path = Path::new(file_path_str);
+
+    let file_name = file_path.file_name().unwrap().to_str().unwrap();
+
+    let tag = Tag::read_from_path(file_path_str).unwrap();
     let track = format!("{:02}", tag.track().unwrap());
 
     let re = Regex::new(r".+ -").unwrap();
-    let newname = re.replace(filename, NoExpand(&track));
+    let newname = re.replace(file_name, NoExpand(&track));
     println!("{}", newname);
 }
